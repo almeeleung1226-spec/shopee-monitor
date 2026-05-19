@@ -1,0 +1,27 @@
+yamlname: Shopee Monitor
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # 每10分钟运行一次
+  workflow_dispatch:          # 允许手动触发
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run monitor
+        env:
+          SERVER_CHAN_KEY: ${{ secrets.SERVER_CHAN_KEY }}
+          SHOPEE_SHOP_ID: ${{ secrets.SHOPEE_SHOP_ID }}
+          SHOPEE_ITEM_IDS: ${{ secrets.SHOPEE_ITEM_IDS }}
+        run: python monitor.py
